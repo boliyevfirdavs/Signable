@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Merriweather', serif;
+    background: linear-gradient(90deg, #000000, #3533cd);
+    overflow: hidden;
+}
+
+#video-container {
+    position: relative;
+    height: 110vh;
+    margin-left: 70px;
+}
+
+#video {
+    position: absolute;
+    top: 51%;
+    left: 190px;
+    transform: translateY(-50%);
+}
+
+.output {
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-top: 315px;
+}
+
+#sentence {
+    position: absolute;
+    bottom: 95px;
+    left: 970px;
+    background: #d7a52d;
+    border-radius: 50px;
+    padding: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    width: 300px;
+}
+
+.logo {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 100px;
+}
+
+#signable {
+    position: absolute;
+    top: 38px;
+    left: 130px;
+    font-size: 38px;
+    color: white;
+}
+
+.slider {
+    position: absolute;
+    top: 105px;
+    left: calc(600px + 400px);
+    display: flex;
+    align-items: center;
+}
+
+.slider label {
+    font-size: 32px;
+    color: white;
+    margin-right: 20px;
+}
+
+.slider input[type="checkbox"] {
+    width: 60px;
+    height: 30px;
+    appearance: none;
+    background: #ddd;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    border-radius: 50px;
+    transition: 0.4s;
+}
+
+.slider input[type="checkbox"]:checked {
+    background: #d7a52d;
+}
+
+.slider input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.slider input[type="checkbox"]:checked::before {
+    transform: translateX(30px);
+}
+
+#neuronCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
