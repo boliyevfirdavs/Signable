@@ -30,7 +30,7 @@ class Particle {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = '#ffd700';
+        ctx.fillStyle = '#d5ff88';
         ctx.fill();
     }
 
@@ -62,7 +62,7 @@ function connectParticles() {
         for (let j = i + 1; j < particles.length; j++) {
             const distance = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
             if (distance < 100) {
-                ctx.strokeStyle = '#ffd700';
+                ctx.strokeStyle = '#d5ff88';
                 ctx.lineWidth = 0.5;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
