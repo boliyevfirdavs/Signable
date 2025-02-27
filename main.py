@@ -1,3 +1,6 @@
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 from flask import Flask, render_template, jsonify, request
 import numpy as np
 from keras._tf_keras.keras.models import Sequential
