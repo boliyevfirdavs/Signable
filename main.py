@@ -1,7 +1,9 @@
 import os
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-from flask import Flask, render_template, jsonify, request
+import time
+from flask import Flask, render_template, jsonify, request, Response, stream_with_context
+import json
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
@@ -40,7 +42,7 @@ def index():
 def reset_variables():
     global sequence, sentence, predictions
     sequence = []
-    sentence = [""]
+    sentence = []
     predictions = []
     return jsonify({'status': 'variables reset'})
 
@@ -50,24 +52,28 @@ def process_keypoints():
     global sequence, sentence, predictions
 
     data = request.json
-    keypoints = data['keypoints']
+    keypoints = data.get('keypoints')
+
+    if not keypoints:
+        return jsonify({'status': 'error', 'message': 'No keypoints provided'}), 400
 
     sequence.append(keypoints)
     sequence = sequence[-30:]
 
     if len(sequence) == 30:
         res = model.predict(np.expand_dims(sequence, axis=0))[0]
-        predictions.append(np.argmax(res))
-
-        if np.unique(predictions[-5:])[0] == np.argmax(res):
-            if res[np.argmax(res)] > threshold:
-                if len(sentence) > 0:
-                    if actions[np.argmax(res)] != sentence[-1] and actions[np.argmax(res)] != "no_event":
-                        sentence.append(actions[np.argmax(res)])
-                else:
-                    if actions[np.argmax(res)] != "no_event":
-                        sentence.append(actions[np.argmax(res)])
-
+        predicted_index = np.argmax(res)
+        confidence = res[predicted_index]
+        predictions.append(predicted_index)
+        predictions = predictions[-5:]
+        if len(predictions) == 5 and np.unique(predictions)[0] == predicted_index:
+            if confidence > threshold:
+                action = actions[predicted_index]
+                if action != "no_event":
+                    if not sentence or action != sentence[-1]:
+                        sentence.append(action)
+                        if len(sentence) > 20:
+                            sentence = sentence[-20:]
     return jsonify({'status': 'success'})
 
 
@@ -83,6 +89,20 @@ def toggle_landmarks():
 def get_sentence():
     return jsonify(sentence)
 
+
+@app.route('/sentence_stream')
+def sentence_stream():
+    def generate():
+        last_sent = None
+        while True:
+            current = list(sentence)  # snapshot
+            if current != last_sent:
+                yield f"data: {json.dumps(current)}\n\n"
+                last_sent = current
+            time.sleep(0.5)
+
+    return Response(stream_with_context(generate()), mimetype='text/event-stream',
+                    headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
 
 if __name__ == "__main__":
     app.run()
