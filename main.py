@@ -3,14 +3,14 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 from flask import Flask, render_template, jsonify, request
 import numpy as np
-from keras._tf_keras.keras.models import Sequential
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-actions = np.array(["no_event", "bu", 'salom', 'beradi', 'yordam', "kar-soqovlarga", "sun'iy idrok"])
+actions = np.array(["no_event", 'brother', 'Hi,', 'My', 'there.', "plays", "soccer."])
 
 model = Sequential()
 model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30, 1662)))
