@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 *.pyo
-.env
+.venv
 .idea/
 MP_Data/
 Logs/
